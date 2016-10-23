@@ -4,7 +4,7 @@ require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
 require 'database_cleaner'
-require 'web_helper'
+require_relative 'web_helper'
 
 SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,
