@@ -4,6 +4,7 @@ require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
 require 'database_cleaner'
+require 'web_helper'
 
 SimpleCov.formatters = [
   SimpleCov::Formatter::HTMLFormatter,
@@ -21,13 +22,18 @@ RSpec.configure do |config|
   config.include Capybara::DSL
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.around(:each) do |example|
-    DatabaseCleaner.cleaning do
-      example.run
-    end
+  # Everything in this block runs once before each individual test
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  # Everything in this block runs once after each individual test
+  config.after(:each) do
+    DatabaseCleaner.clean
   end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
